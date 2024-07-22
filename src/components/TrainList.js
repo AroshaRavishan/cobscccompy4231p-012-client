@@ -1,6 +1,6 @@
-// src/TrainList.js
+// src/components/TrainList.js
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import trainService from '../services/trainService';
 
 const TrainList = () => {
     const [trains, setTrains] = useState([]);
@@ -8,16 +8,18 @@ const TrainList = () => {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        // Replace with your API URL
-        axios.get('http://localhost:3000/api/trains')
-            .then(response => {
-                setTrains(response.data);
+        const fetchTrains = async () => {
+            try {
+                const data = await trainService.getAllTrains();
+                setTrains(data);
                 setLoading(false);
-            })
-            .catch(error => {
+            } catch (error) {
                 setError(error);
                 setLoading(false);
-            });
+            }
+        };
+
+        fetchTrains();
     }, []);
 
     if (loading) return <p>Loading...</p>;
@@ -29,7 +31,7 @@ const TrainList = () => {
             <ul>
                 {trains.map(train => (
                     <li key={train._id}>
-                        <h2>{train.trainName}</h2>
+                        <h2 className=''>{train.trainName}</h2>
                         <p>Train Number: {train.trainNumber}</p>
                         <p>Route: {train.routeName}</p>
                         <p>Start Station: {train.startStation}</p>
