@@ -1,14 +1,17 @@
-// src/App.js
+import { useState } from 'react'
 import React from 'react';
-import TrainList from './components/TrainList';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import HomePage from './Pages/Home'; // Ensure this path is correct
+import './App.css';
 
-const App = () => {
+function App() {
+  const [count, setCount] = useState(0);
+
   return (
-    <div className="App">
-      <h1 className='text-primary'>Welcome to the Train Information System</h1>
-      <TrainList />
-    </div>
+    <Routes>
+      <Route path="/" element={<HomePage />} />
+    </Routes>
   );
-};
+}
 
 export default App;
