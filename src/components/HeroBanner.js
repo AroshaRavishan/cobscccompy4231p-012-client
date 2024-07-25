@@ -3,6 +3,7 @@ import { motion, useAnimation } from "framer-motion";
 import Select from 'react-select';
 import Datetime from 'react-datetime';
 import 'react-datetime/css/react-datetime.css';
+import Timeline from './Timeline'; // Import the Timeline component
 
 function Hero({ backgroundImage, heroText, heroDescription, heroDescription2 }) {
     const sectionStyle = {
@@ -40,7 +41,6 @@ function Hero({ backgroundImage, heroText, heroDescription, heroDescription2 }) 
             }
         };
 
-        // Initial check for scroll position when the page is loaded or refreshed
         handleScroll();
 
         window.addEventListener("scroll", handleScroll);
@@ -53,27 +53,72 @@ function Hero({ backgroundImage, heroText, heroDescription, heroDescription2 }) 
     const [from, setFrom] = useState(null);
     const [to, setTo] = useState(null);
     const [dateTime, setDateTime] = useState(new Date());
+    const [trains, setTrains] = useState([
+        // Add sample train data here
+    ]);
 
     const handleFromChange = selectedOption => {
         setFrom(selectedOption);
+        updateTrains(selectedOption, to, dateTime);
     };
 
     const handleToChange = selectedOption => {
         setTo(selectedOption);
+        updateTrains(from, selectedOption, dateTime);
     };
 
     const handleDateTimeChange = date => {
         setDateTime(date);
+        updateTrains(from, to, date);
+    };
+
+    const updateTrains = (from, to, dateTime) => {
+        // Filter and update the trains based on selected options
+        // Sample logic, replace with your actual data-fetching logic
+        const filteredTrains = []; // Implement your filtering logic here
+        setTrains(filteredTrains);
     };
 
     const options = [
-        { value: 'new_york', label: 'New York' },
-        { value: 'los_angeles', label: 'Los Angeles' },
-        { value: 'chicago', label: 'Chicago' },
-        { value: 'houston', label: 'Houston' },
-        { value: 'miami', label: 'Miami' },
-        // Add more options as needed
+        { value: 'aluthgama', label: 'Aluthgama' },
+        { value: 'anuradhapura', label: 'Anuradhapura' },
+        { value: 'badulla', label: 'Badulla' },
+        { value: 'bandarawela', label: 'Bandarawela' },
+        { value: 'batticaloa', label: 'Batticaloa' },
+        { value: 'beliatta', label: 'Beliatta' },
+        { value: 'bentota', label: 'Bentota' },
+        { value: 'colombo_fort', label: 'Colombo Fort' },
+        { value: 'ella', label: 'Ella' },
+        { value: 'galle', label: 'Galle' },
+        { value: 'gampaha', label: 'Gampaha' },
+        { value: 'haputale', label: 'Haputale' },
+        { value: 'hatton', label: 'Hatton' },
+        { value: 'hikkaduwa', label: 'Hikkaduwa' },
+        { value: 'jaffna', label: 'Jaffna' },
+        { value: 'kadugannawa', label: 'Kadugannawa' },
+        { value: 'kankesanthurai', label: 'Kankesanthurai' },
+        { value: 'kandy', label: 'Kandy' },
+        { value: 'kalutara_south', label: 'Kalutara South' },
+        { value: 'kilinochchi', label: 'Kilinochchi' },
+        { value: 'kurunegala', label: 'Kurunegala' },
+        { value: 'maho', label: 'Maho' },
+        { value: 'matara', label: 'Matara' },
+        { value: 'mirigama', label: 'Mirigama' },
+        { value: 'moratuwa', label: 'Moratuwa' },
+        { value: 'nanu_oya', label: 'Nanu Oya' },
+        { value: 'omanthai', label: 'Omanthai' },
+        { value: 'panadura', label: 'Panadura' },
+        { value: 'peradeniya', label: 'Peradeniya' },
+        { value: 'polgahawela', label: 'Polgahawela' },
+        { value: 'polonnaruwa', label: 'Polonnaruwa' },
+        { value: 'ragama', label: 'Ragama' },
+        { value: 'rambukkana', label: 'Rambukkana' },
+        { value: 'unawatuna', label: 'Unawatuna' },
+        { value: 'vavuniya', label: 'Vavuniya' },
+        { value: 'veyangoda', label: 'Veyangoda' },
+        { value: 'weligama', label: 'Weligama' }
     ];
+
 
     return (
         <React.Fragment>
@@ -144,7 +189,6 @@ function Hero({ backgroundImage, heroText, heroDescription, heroDescription2 }) 
                                         >
                                             <p className="text-3xl md:text-5xl font-semibold mt-4">{heroDescription}</p>
                                         </motion.div>
-                                        {/* Uncomment this if you need the second description */}
                                         <motion.div
                                             initial="hidden"
                                             animate={controls}
@@ -158,9 +202,9 @@ function Hero({ backgroundImage, heroText, heroDescription, heroDescription2 }) 
                             </div>
                         </div>
                     </div>
-
                 </div>
             </section>
+            <Timeline trains={trains} from={from} to={to} dateTime={dateTime} />
         </React.Fragment>
     );
 }
