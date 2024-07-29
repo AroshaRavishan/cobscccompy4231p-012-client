@@ -3,6 +3,7 @@ import { motion, useAnimation } from "framer-motion";
 import Select from 'react-select';
 import Datetime from 'react-datetime';
 import 'react-datetime/css/react-datetime.css';
+import Autosuggest from "react-autosuggest";
 import Timeline from './Timeline'; // Import the Timeline component
 
 function Hero({ backgroundImage, heroText, heroDescription, heroDescription2 }) {
@@ -53,31 +54,98 @@ function Hero({ backgroundImage, heroText, heroDescription, heroDescription2 }) 
     const [from, setFrom] = useState(null);
     const [to, setTo] = useState(null);
     const [dateTime, setDateTime] = useState(new Date());
-    const [trains, setTrains] = useState([
-        // Add sample train data here
-    ]);
+    const [trains, setTrains] = useState([]);
+    const [searchQuery, setSearchQuery] = useState(""); // State for the search query
+    const [suggestions, setSuggestions] = useState([]); // State for suggestions
 
     const handleFromChange = selectedOption => {
         setFrom(selectedOption);
-        updateTrains(selectedOption, to, dateTime);
+        updateTrains(selectedOption, to, dateTime, searchQuery);
     };
 
     const handleToChange = selectedOption => {
         setTo(selectedOption);
-        updateTrains(from, selectedOption, dateTime);
+        updateTrains(from, selectedOption, dateTime, searchQuery);
     };
 
     const handleDateTimeChange = date => {
         setDateTime(date);
-        updateTrains(from, to, date);
+        updateTrains(from, to, date, searchQuery);
     };
 
-    const updateTrains = (from, to, dateTime) => {
-        // Filter and update the trains based on selected options
+    const handleSearchChange = (event, { newValue }) => {
+        setSearchQuery(newValue);
+        updateTrains(from, to, dateTime, newValue);
+    };
+
+    const onSuggestionsFetchRequested = ({ value }) => {
+        setSuggestions(getSuggestions(value));
+    };
+
+    const onSuggestionsClearRequested = () => {
+        setSuggestions([]);
+    };
+
+    const getSuggestions = value => {
+        const inputValue = value.trim().toLowerCase();
+        const inputLength = inputValue.length;
+        return inputLength === 0 ? [] : trainNames.filter(train =>
+            train.toLowerCase().includes(inputValue)
+        );
+    };
+
+    const getSuggestionValue = suggestion => suggestion;
+
+    const renderSuggestion = suggestion => (
+        <div>{suggestion}</div>
+    );
+
+    const updateTrains = (from, to, dateTime, query) => {
+        // Filter and update the trains based on selected options and search query
         // Sample logic, replace with your actual data-fetching logic
         const filteredTrains = []; // Implement your filtering logic here
         setTrains(filteredTrains);
     };
+
+    const trainNames = [
+        "Udarata Menike",
+        "Podi Menike",
+        "Ruhunu Kumari",
+        "Yal Devi",
+        "Uttara Devi",
+        "Rajarata Rajini",
+        "Pulathisi Express",
+        "Dakshina Intercity",
+        "Galu Kumari",
+        "Kandy Intercity",
+        "Matara Express",
+        "Sagarika Express",
+        "Colombo Commuter",
+        "Night Mail",
+        "Day Time Express",
+        "Sri Devi",
+        "Siyane Menike",
+        "Gamana Kekulu",
+        "Anuradhapura Special",
+        "Kelani Valley Train",
+        "Samudra Devi",
+        "Intercity Express",
+        "Galoya Intercity",
+        "Galadari Express",
+        "Podi Menike Special",
+        "Udarata Menike Special",
+        "Vavuniya Intercity",
+        "Colombo Special",
+        "Polonnaruwa Express",
+        "Batugedara Express",
+        "Badulla Intercity",
+        "Wanni Dewi",
+        "Mahawa Express",
+        "Express Train 1",
+        "Local Train 2",
+        "Night Train 3"
+    ];
+
 
     const options = [
         { value: 'aluthgama', label: 'Aluthgama' },
@@ -127,6 +195,29 @@ function Hero({ backgroundImage, heroText, heroDescription, heroDescription2 }) 
                     <div className="container">
                         <div className="lg:grid grid-cols-1 lg:grid-cols-12">
                             <div className="lg:col-span-4 bg-white rounded-4 p-4">
+                                <div className="mb-4 relative">
+                                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="search">
+                                        Search Train
+                                    </label>
+                                    <Autosuggest
+                                        id="search"
+                                        suggestions={suggestions}
+                                        onSuggestionsFetchRequested={onSuggestionsFetchRequested}
+                                        onSuggestionsClearRequested={onSuggestionsClearRequested}
+                                        getSuggestionValue={getSuggestionValue}
+                                        renderSuggestion={renderSuggestion}
+                                        inputProps={{
+                                            value: searchQuery,
+                                            onChange: handleSearchChange,
+                                            placeholder: "Search for trains..."
+                                        }}
+                                        theme={{
+                                            input: "w-full p-2 border border-[hsl(0,0%,80%)] rounded",
+                                            suggestionsContainer: "absolute z-10 w-full bg-white rounded mt-1",
+                                            suggestion: "p-2 cursor-pointer hover:bg-gray-200"
+                                        }}
+                                    />
+                                </div>
                                 <div className="mb-4">
                                     <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="from">
                                         From
@@ -168,6 +259,7 @@ function Hero({ backgroundImage, heroText, heroDescription, heroDescription2 }) 
                                         className="w-full"
                                     />
                                 </div>
+                                
                             </div>
                             <div className="lg:col-span-8">
                                 <div className="">

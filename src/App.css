@@ -32,3 +32,8 @@
 .form-control{
   width: 100%;
 }
+
+#react-autowhatever-search ul{
+  height: 275px;
+  overflow: scroll;
+}
