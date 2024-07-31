@@ -5,6 +5,7 @@ import Datetime from 'react-datetime';
 import 'react-datetime/css/react-datetime.css';
 import Autosuggest from "react-autosuggest";
 import Timeline from './Timeline'; // Import the Timeline component
+import locationService from '../services/locationService';
 
 function Hero({ backgroundImage, heroText, heroDescription, heroDescription2 }) {
     const sectionStyle = {
@@ -57,6 +58,7 @@ function Hero({ backgroundImage, heroText, heroDescription, heroDescription2 }) 
     const [trains, setTrains] = useState([]);
     const [searchQuery, setSearchQuery] = useState(""); // State for the search query
     const [suggestions, setSuggestions] = useState([]); // State for suggestions
+    const [showMessage, setShowMessage] = useState(false); // State to control message visibility
 
     const handleFromChange = selectedOption => {
         setFrom(selectedOption);
@@ -73,9 +75,24 @@ function Hero({ backgroundImage, heroText, heroDescription, heroDescription2 }) 
         updateTrains(from, to, date, searchQuery);
     };
 
-    const handleSearchChange = (event, { newValue }) => {
+    const [searchResults, setSearchResults] = useState([]);
+
+    const handleSearchChange = async (event, { newValue }) => {
         setSearchQuery(newValue);
-        updateTrains(from, to, dateTime, newValue);
+        if (newValue) {
+            try {
+                const data = await locationService.searchLocations(newValue);
+                setSearchResults(data);
+                setShowMessage(data.length === 0);
+            } catch (error) {
+                console.error('Error fetching search results:', error);
+                setSearchResults([]);
+                setShowMessage(true);
+            }
+        } else {
+            setSearchResults([]);
+            setShowMessage(false);
+        }
     };
 
     const onSuggestionsFetchRequested = ({ value }) => {
@@ -105,7 +122,15 @@ function Hero({ backgroundImage, heroText, heroDescription, heroDescription2 }) 
         // Sample logic, replace with your actual data-fetching logic
         const filteredTrains = []; // Implement your filtering logic here
         setTrains(filteredTrains);
+
+        // Show message only if search query is not empty and no trains are found
+        if (query) {
+            setShowMessage(filteredTrains.length === 0);
+        } else {
+            setShowMessage(false);
+        }
     };
+
 
     const trainNames = [
         "Udarata Menike",
@@ -259,9 +284,8 @@ function Hero({ backgroundImage, heroText, heroDescription, heroDescription2 }) 
                                         className="w-full"
                                     />
                                 </div>
-                                
                             </div>
-                            <div className="lg:col-span-8">
+                            <div className="lg:col-span-8 flex items-center">
                                 <div className="">
                                     <div className="container text-center overflow-hidden">
                                         <motion.div
@@ -296,7 +320,7 @@ function Hero({ backgroundImage, heroText, heroDescription, heroDescription2 }) 
                     </div>
                 </div>
             </section>
-            <Timeline trains={trains} from={from} to={to} dateTime={dateTime} />
+            <Timeline trains={searchResults} showMessage={showMessage} />
         </React.Fragment>
     );
 }

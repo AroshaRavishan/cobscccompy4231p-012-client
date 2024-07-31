@@ -24,6 +24,16 @@ const getLocationById = async (id) => {
     }
 };
 
+const searchLocations = async (query) => {
+    try {
+        const response = await axios.get(`${API_BASE_URL}/search?q=${query}`);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+
 // Function to create a new location
 const createLocation = async (locationData) => {
     try {
@@ -61,4 +71,5 @@ export default {
     createLocation,
     updateLocation,
     deleteLocation,
+    searchLocations,
 };
