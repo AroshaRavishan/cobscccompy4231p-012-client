@@ -26,7 +26,7 @@ const getLocationById = async (id) => {
 
 const searchLocations = async (query) => {
     try {
-        const response = await axios.get(`${API_BASE_URL}/search?q=${query}`);
+        const response = await axios.get(`${API_BASE_URL}/search?searchBar=${query}`);
         return response.data;
     } catch (error) {
         throw error;

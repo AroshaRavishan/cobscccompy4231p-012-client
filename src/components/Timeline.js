@@ -1,6 +1,31 @@
-import React from 'react';
+import React, { useState } from 'react';
+import Modal from '../components/TrainDetailsModal'; // Make sure to create this file in the same directory
 
 const Timeline = ({ trains, showMessage }) => {
+    const [currentPage, setCurrentPage] = useState(1);
+    const [selectedTrain, setSelectedTrain] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const itemsPerPage = 10;
+
+    const indexOfLastTrain = currentPage * itemsPerPage;
+    const indexOfFirstTrain = indexOfLastTrain - itemsPerPage;
+    const currentTrains = trains.slice(indexOfFirstTrain, indexOfLastTrain);
+
+    const totalPages = Math.ceil(trains.length / itemsPerPage);
+
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    };
+
+    const handleRowClick = (train) => {
+        setSelectedTrain(train);
+        setIsModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+    };
+
     return (
         <div className="p-4">
             {showMessage ? (
@@ -11,8 +36,8 @@ const Timeline = ({ trains, showMessage }) => {
                 <>
                     {/* Mobile view */}
                     <div className="md:hidden">
-                        {trains.map((location, index) => (
-                            <div key={index} className="mb-4 bg-white shadow rounded-lg p-4">
+                        {currentTrains.map((location, index) => (
+                            <div key={index} className="mb-4 bg-white shadow rounded-lg p-4" onClick={() => handleRowClick(location)}>
                                 <h3 className="font-bold text-lg mb-2">{location.TrainId.trainName}</h3>
                                 <p><span className="font-semibold">From:</span> {location.TrainId.startStation}</p>
                                 <p><span className="font-semibold">To:</span> {location.TrainId.endStation}</p>
@@ -34,8 +59,8 @@ const Timeline = ({ trains, showMessage }) => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {trains.map((location, index) => (
-                                    <tr key={index} className="border-b hover:bg-gray-50">
+                                {currentTrains.map((location, index) => (
+                                    <tr key={index} className="border-b hover:bg-gray-50 cursor-pointer" onClick={() => handleRowClick(location)}>
                                         <td className="p-3">{location.TrainId.trainName}</td>
                                         <td className="p-3">{location.TrainId.startStation}</td>
                                         <td className="p-3">{location.TrainId.endStation}</td>
@@ -46,6 +71,21 @@ const Timeline = ({ trains, showMessage }) => {
                             </tbody>
                         </table>
                     </div>
+                    {/* Pagination */}
+                    <div className="mt-4 flex justify-center">
+                        {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                            <button
+                                key={page}
+                                onClick={() => handlePageChange(page)}
+                                className={`mx-1 px-3 py-1 rounded ${currentPage === page ? 'bg-blue-500 text-white' : 'bg-gray-200'
+                                    }`}
+                            >
+                                {page}
+                            </button>
+                        ))}
+                    </div>
+                    {/* Modal */}
+                    <Modal isOpen={isModalOpen} onClose={closeModal} train={selectedTrain} />
                 </>
             )}
         </div>
