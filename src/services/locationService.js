@@ -24,14 +24,18 @@ const getLocationById = async (id) => {
     }
 };
 
-const searchLocations = async (query) => {
+const searchLocations = async (searchBar, startStation, endStation, dateTime) => {
     try {
-        const response = await axios.get(`${API_BASE_URL}/search?searchBar=${query}`);
+        // Construct the URL with all parameters
+        const url = `${API_BASE_URL}/search?searchBar=${encodeURIComponent(searchBar)}&startStation=${encodeURIComponent(startStation)}&endStation=${encodeURIComponent(endStation)}&dateTime=${encodeURIComponent(dateTime)}`;
+
+        const response = await axios.get(url);
         return response.data;
     } catch (error) {
         throw error;
     }
 };
+
 
 
 // Function to create a new location

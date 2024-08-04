@@ -52,28 +52,99 @@ function Hero({ backgroundImage, heroText, heroDescription, heroDescription2 }) 
         };
     }, [controls]);
 
-    const [from, setFrom] = useState(null);
-    const [to, setTo] = useState(null);
-    const [dateTime, setDateTime] = useState(new Date());
+    const [from, setFrom] = useState("");
+    const [to, setTo] = useState("");
+    const [dateTime, setDateTime] = useState("");
     const [trains, setTrains] = useState([]);
     const [searchQuery, setSearchQuery] = useState(""); // State for the search query
     const [suggestions, setSuggestions] = useState([]); // State for suggestions
     const [showMessage, setShowMessage] = useState(false); // State to control message visibility
 
     const handleFromChange = selectedOption => {
-        setFrom(selectedOption);
-        updateTrains(selectedOption, to, dateTime, searchQuery);
+        const fromValue = selectedOption ? selectedOption.label : null;
+        setFrom(fromValue);
+        if (fromValue) {
+            try {
+                const data = locationService.searchLocations(searchQuery, fromValue, to, dateTime);
+                setSearchResults(Array.isArray(data) ? data : []);
+                //console.log("data from", data);
+                setShowMessage(data.length === 0);
+            } catch (error) {
+                console.error('Error fetching search results:', error);
+                setSearchResults([]);
+                setShowMessage(true);
+            }
+        } else {
+            setSearchResults([]);
+            setShowMessage(false);
+        }
     };
 
     const handleToChange = selectedOption => {
-        setTo(selectedOption);
-        updateTrains(from, selectedOption, dateTime, searchQuery);
+        const toValue = selectedOption ? selectedOption.label : null;
+        setTo(toValue);
+        if (toValue) {
+            try {
+                const data = locationService.searchLocations(searchQuery, from, toValue, dateTime);
+                setSearchResults(Array.isArray(data) ? data : []);
+                //console.log("data to", data);
+                setShowMessage(data.length === 0);
+            } catch (error) {
+                console.error('Error fetching search results:', error);
+                setSearchResults([]);
+                setShowMessage(true);
+            }
+        } else {
+            setSearchResults([]);
+            setShowMessage(false);
+        }
     };
 
+    function formatToCustomISO(momentObj) {
+        const date = momentObj._d; // Extract the Date object from the Moment.js object
+
+        const pad = (num) => num.toString().padStart(2, '0');
+
+        const year = date.getFullYear();
+        const month = pad(date.getMonth() + 1); // Months are zero-based in JavaScript
+        const day = pad(date.getDate());
+        const hours = pad(date.getHours());
+        const minutes = pad(date.getMinutes());
+        const seconds = pad(date.getSeconds());
+        const milliseconds = date.getMilliseconds().toString().padStart(3, '0');
+
+        return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.${milliseconds}Z`;
+    }
+
     const handleDateTimeChange = date => {
-        setDateTime(date);
-        updateTrains(from, to, date, searchQuery);
+        console.log("Date 1:", date);
+
+        const isoDate = formatToCustomISO(date);
+        console.log("Date foramtttttttttttttttttttttttttttttttttttttttttttted:", isoDate);
+        setDateTime(isoDate);
     };
+
+    useEffect(() => {
+        const fetchData = async () => {
+            if (dateTime) {
+                try {
+                    console.log("Date asdfg:", dateTime);
+                    const data = await locationService.searchLocations(searchQuery, from, to, dateTime);
+                    setSearchResults(Array.isArray(data) ? data : []);
+                    setShowMessage(data.length === 0);
+                } catch (error) {
+                    console.error('Error fetching search results:', error);
+                    setSearchResults([]);
+                    setShowMessage(true);
+                }
+            } else {
+                setSearchResults([]);
+                setShowMessage(false);
+            }
+        };
+
+        fetchData();
+    }, [dateTime, searchQuery, from, to]);
 
     const [searchResults, setSearchResults] = useState([]);
 
@@ -81,8 +152,9 @@ function Hero({ backgroundImage, heroText, heroDescription, heroDescription2 }) 
         setSearchQuery(newValue);
         if (newValue) {
             try {
-                const data = await locationService.searchLocations(newValue);
+                const data = await locationService.searchLocations(newValue, from, to, dateTime);
                 setSearchResults(data);
+                //console.log("data search", data);
                 setShowMessage(data.length === 0);
             } catch (error) {
                 console.error('Error fetching search results:', error);
@@ -123,7 +195,7 @@ function Hero({ backgroundImage, heroText, heroDescription, heroDescription2 }) 
         const filteredTrains = []; // Implement your filtering logic here
         setTrains(filteredTrains);
 
-        // Show message only if search query is not empty and no trains are found
+        // Show message only if search query is not empty andd no trains are found
         if (query) {
             setShowMessage(filteredTrains.length === 0);
         } else {
@@ -249,7 +321,7 @@ function Hero({ backgroundImage, heroText, heroDescription, heroDescription2 }) 
                                     </label>
                                     <Select
                                         id="from"
-                                        value={from}
+                                        value={options.find(option => option.value === from)}
                                         onChange={handleFromChange}
                                         options={options}
                                         className="basic-single"
@@ -264,7 +336,7 @@ function Hero({ backgroundImage, heroText, heroDescription, heroDescription2 }) 
                                     </label>
                                     <Select
                                         id="to"
-                                        value={to}
+                                        value={options.find(option => option.value === to)}
                                         onChange={handleToChange}
                                         options={options}
                                         className="basic-single"

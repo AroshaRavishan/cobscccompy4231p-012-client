@@ -7,6 +7,7 @@ const Timeline = ({ trains, showMessage }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const itemsPerPage = 10;
 
+
     const indexOfLastTrain = currentPage * itemsPerPage;
     const indexOfFirstTrain = indexOfLastTrain - itemsPerPage;
     const currentTrains = trains.slice(indexOfFirstTrain, indexOfLastTrain);
