@@ -30,6 +30,7 @@ const searchLocations = async (searchBar, startStation, endStation, dateTime) =>
         const url = `${API_BASE_URL}/search?searchBar=${encodeURIComponent(searchBar)}&startStation=${encodeURIComponent(startStation)}&endStation=${encodeURIComponent(endStation)}&dateTime=${encodeURIComponent(dateTime)}`;
 
         const response = await axios.get(url);
+        console.log("Response :", response);
         return response.data;
     } catch (error) {
         throw error;

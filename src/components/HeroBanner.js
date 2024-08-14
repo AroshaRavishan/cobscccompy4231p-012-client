@@ -393,6 +393,7 @@ function Hero({ backgroundImage, heroText, heroDescription, heroDescription2 }) 
                 </div>
             </section>
             <Timeline trains={searchResults} showMessage={showMessage} />
+            {console.log("searchResults :", searchResults)}
         </React.Fragment>
     );
 }
