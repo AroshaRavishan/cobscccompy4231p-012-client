@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 // Define the base URL for the API
-const API_BASE_URL = 'http://localhost:3000/api/locations';
+const API_BASE_URL = 'https://cobsccompy4231p-012-api-35d6f535e08d.herokuapp.com/api/locations';
 
 // Function to get all locations
 const getAllLocations = async () => {
