@@ -13,6 +13,7 @@ const Timeline = ({ trains, showMessage }) => {
     const currentTrains = trains.slice(indexOfFirstTrain, indexOfLastTrain);
 
     const totalPages = Math.ceil(trains.length / itemsPerPage);
+    const maxPagesToShow = 5;
 
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
@@ -26,6 +27,49 @@ const Timeline = ({ trains, showMessage }) => {
     const closeModal = () => {
         setIsModalOpen(false);
     };
+
+    const renderPagination = () => {
+        const pages = [];
+        let startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
+        let endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
+
+        if (endPage - startPage + 1 < maxPagesToShow) {
+            startPage = Math.max(1, endPage - maxPagesToShow + 1);
+        }
+
+        if (startPage > 1) {
+            pages.push(
+                <button key={1} onClick={() => handlePageChange(1)} className="mx-1 px-3 py-1 rounded bg-gray-200">1</button>
+            );
+            if (startPage > 2) {
+                pages.push(<span key="start-ellipsis" className="mx-1">...</span>);
+            }
+        }
+
+        for (let page = startPage; page <= endPage; page++) {
+            pages.push(
+                <button
+                    key={page}
+                    onClick={() => handlePageChange(page)}
+                    className={`mx-1 px-3 py-1 rounded ${currentPage === page ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+                >
+                    {page}
+                </button>
+            );
+        }
+
+        if (endPage < totalPages) {
+            if (endPage < totalPages - 1) {
+                pages.push(<span key="end-ellipsis" className="mx-1">...</span>);
+            }
+            pages.push(
+                <button key={totalPages} onClick={() => handlePageChange(totalPages)} className="mx-1 px-3 py-1 rounded bg-gray-200">{totalPages}</button>
+            );
+        }
+
+        return pages;
+    };
+
 
     return (
         <div className="p-4">
@@ -73,18 +117,9 @@ const Timeline = ({ trains, showMessage }) => {
                         </table>
                     </div>
                     {/* Pagination */}
-                    <div className="mt-4 flex justify-center">
-                        {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                            <button
-                                key={page}
-                                onClick={() => handlePageChange(page)}
-                                className={`mx-1 px-3 py-1 rounded ${currentPage === page ? 'bg-blue-500 text-white' : 'bg-gray-200'
-                                    }`}
-                            >
-                                {page}
-                            </button>
-                        ))}
-                    </div>
+                        <div className="mt-4 flex justify-center">
+                            {renderPagination()}
+                        </div>
                     {/* Modal */}
                     <Modal isOpen={isModalOpen} onClose={closeModal} train={selectedTrain} />
                 </>
