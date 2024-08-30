@@ -40,16 +40,9 @@ const Modal = ({ isOpen, onClose, train }) => {
                         <div className="flex justify-between items-center">
                             <div className="flex items-center">
                                 <FaMapMarkerAlt className="text-green-500 mr-2" />
-                                <span className="text-sm font-medium text-gray-700">From:</span>
+                                <span className="text-sm font-medium text-gray-700">Current Direction:</span>
                             </div>
-                            <span className="text-sm text-gray-600">{train?.TrainId.startStation}</span>
-                        </div>
-                        <div className="flex justify-between items-center">
-                            <div className="flex items-center">
-                                <FaMapMarkerAlt className="text-red-500 mr-2" />
-                                <span className="text-sm font-medium text-gray-700">To:</span>
-                            </div>
-                            <span className="text-sm text-gray-600">{train?.TrainId.endStation}</span>
+                            <span className="text-sm text-gray-600">{train?.TrainId.currentDirection}</span>
                         </div>
                         <div className="flex justify-between items-center">
                             <div className="flex items-center">

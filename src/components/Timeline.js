@@ -84,6 +84,7 @@ const Timeline = ({ trains, showMessage }) => {
                         {currentTrains.map((location, index) => (
                             <div key={index} className="mb-4 bg-white shadow rounded-lg p-4" onClick={() => handleRowClick(location)}>
                                 <h3 className="font-bold text-lg mb-2">{location.TrainId.trainName}</h3>
+                                <p><span className="font-semibold">Current Direction:</span> {location.TrainId.currentDirection}</p>
                                 <p><span className="font-semibold">From:</span> {location.TrainId.startStation}</p>
                                 <p><span className="font-semibold">To:</span> {location.TrainId.endStation}</p>
                                 <p><span className="font-semibold">Express:</span> {location.TrainId.isExpress ? 'Yes' : 'No'}</p>
@@ -97,8 +98,9 @@ const Timeline = ({ trains, showMessage }) => {
                             <thead>
                                 <tr className="bg-gray-100">
                                     <th className="p-3 text-left">Train Name</th>
-                                    <th className="p-3 text-left">Start Location</th>
-                                    <th className="p-3 text-left">End Location</th>
+                                    <th className="p-3 text-left">Current Direction</th>
+                                    {/* <th className="p-3 text-left">Start Location</th>
+                                    <th className="p-3 text-left">End Location</th> */}
                                     <th className="p-3 text-left">Express</th>
                                     <th className="p-3 text-left">Last Arrived Station (Time)</th>
                                 </tr>
@@ -107,8 +109,9 @@ const Timeline = ({ trains, showMessage }) => {
                                 {currentTrains.map((location, index) => (
                                     <tr key={index} className="border-b hover:bg-gray-50 cursor-pointer" onClick={() => handleRowClick(location)}>
                                         <td className="p-3">{location.TrainId.trainName}</td>
-                                        <td className="p-3">{location.TrainId.startStation}</td>
-                                        <td className="p-3">{location.TrainId.endStation}</td>
+                                        <td className="p-3">{location.TrainId.currentDirection}</td>
+                                        {/* <td className="p-3">{location.TrainId.startStation}</td>
+                                        <td className="p-3">{location.TrainId.endStation}</td> */}
                                         <td className="p-3">{location.TrainId.isExpress ? 'Yes' : 'No'}</td>
                                         <td className="p-3">{`${location.LastArrivedStation} (${new Date(location.DateTime).toLocaleString()})`}</td>
                                     </tr>
