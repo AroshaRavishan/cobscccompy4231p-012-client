@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 // Define the base URL for the API
-const API_BASE_URL = 'https://cobsccompy4231p-012-api-35d6f535e08d.herokuapp.com/api/trains';
+const API_BASE_URL = 'https://cobsccompy4231p-012-api-8e2e4fbeaabd.herokuapp.com/api/trains';
 
 // Function to get all trains
 const getAllTrains = async () => {
