@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import Modal from '../components/TrainDetailsModal'; // Make sure to create this file in the same directory
+import React, { useState, useMemo } from 'react';
+import Modal from '../components/TrainDetailsModal';
 
 const Timeline = ({ trains, showMessage }) => {
     const [currentPage, setCurrentPage] = useState(1);
@@ -7,12 +7,16 @@ const Timeline = ({ trains, showMessage }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const itemsPerPage = 10;
 
+    // Sort trains by DateTime in descending order (most recent first)
+    const sortedTrains = useMemo(() => {
+        return [...trains].sort((a, b) => new Date(b.DateTime) - new Date(a.DateTime));
+    }, [trains]);
 
     const indexOfLastTrain = currentPage * itemsPerPage;
     const indexOfFirstTrain = indexOfLastTrain - itemsPerPage;
-    const currentTrains = trains.slice(indexOfFirstTrain, indexOfLastTrain);
+    const currentTrains = sortedTrains.slice(indexOfFirstTrain, indexOfLastTrain);
 
-    const totalPages = Math.ceil(trains.length / itemsPerPage);
+    const totalPages = Math.ceil(sortedTrains.length / itemsPerPage);
     const maxPagesToShow = 5;
 
     const handlePageChange = (pageNumber) => {
@@ -70,7 +74,6 @@ const Timeline = ({ trains, showMessage }) => {
         return pages;
     };
 
-
     return (
         <div className="p-4">
             {showMessage ? (
@@ -99,8 +102,6 @@ const Timeline = ({ trains, showMessage }) => {
                                 <tr className="bg-gray-100">
                                     <th className="p-3 text-left">Train Name</th>
                                     <th className="p-3 text-left">Current Direction</th>
-                                    {/* <th className="p-3 text-left">Start Location</th>
-                                    <th className="p-3 text-left">End Location</th> */}
                                     <th className="p-3 text-left">Express</th>
                                     <th className="p-3 text-left">Last Arrived Station (Time)</th>
                                 </tr>
@@ -110,8 +111,6 @@ const Timeline = ({ trains, showMessage }) => {
                                     <tr key={index} className="border-b hover:bg-gray-50 cursor-pointer" onClick={() => handleRowClick(location)}>
                                         <td className="p-3">{location.TrainId.trainName}</td>
                                         <td className="p-3">{location.TrainId.currentDirection}</td>
-                                        {/* <td className="p-3">{location.TrainId.startStation}</td>
-                                        <td className="p-3">{location.TrainId.endStation}</td> */}
                                         <td className="p-3">{location.TrainId.isExpress ? 'Yes' : 'No'}</td>
                                         <td className="p-3">{`${location.LastArrivedStation} (${new Date(location.DateTime).toLocaleString()})`}</td>
                                     </tr>
@@ -120,9 +119,9 @@ const Timeline = ({ trains, showMessage }) => {
                         </table>
                     </div>
                     {/* Pagination */}
-                        <div className="mt-4 flex justify-center">
-                            {renderPagination()}
-                        </div>
+                    <div className="mt-4 flex justify-center">
+                        {renderPagination()}
+                    </div>
                     {/* Modal */}
                     <Modal isOpen={isModalOpen} onClose={closeModal} train={selectedTrain} />
                 </>
