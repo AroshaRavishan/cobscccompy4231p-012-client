@@ -270,8 +270,8 @@ function Hero({ backgroundImage, heroText, heroDescription, heroDescription2 }) 
             <section>
                 <div style={sectionStyle} className="w-full h-[70vh] relative flex items-center">
                     <div className="container">
-                        <div className="lg:grid grid-cols-1 lg:grid-cols-12">
-                            <div className="lg:col-span-4 bg-white rounded-4 p-4">
+                        <div className="lg:grid grid-cols-1 lg:grid-cols-12 flex flex-col-reverse lg:flex-row">
+                            <div className="lg:col-span-4 bg-white rounded-4 p-4 mt-4 lg:mt-0">
                                 <div className="mb-4 relative">
                                     <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="search">
                                         Search Train
@@ -339,7 +339,7 @@ function Hero({ backgroundImage, heroText, heroDescription, heroDescription2 }) 
                             </div>
                             <div className="lg:col-span-8 flex items-center">
                                 <div className="">
-                                    <div className="container text-center overflow-hidden">
+                                    <div className="text-center overflow-hidden">
                                         <motion.div
                                             initial="hidden"
                                             animate={controls}
